@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " 11",
+    "1  ",
+	"0  "
+  ],
+  "key": {
+    "0": {
+      "item": "minecraft:bone"
+    },
+	"1": {
+      "item": "minecraft:rotten_flesh"
+    }
+  },
+  "result": {
+    "item": "eldenmessage:tarnished_wizened_finger"
+  }
+}

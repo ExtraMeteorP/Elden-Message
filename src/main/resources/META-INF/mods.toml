@@ -1,0 +1,16 @@
+modLoader="javafml"
+loaderVersion="[40,)"
+license="All rights reserved"
+
+[[mods]]
+modId="eldenmessage"
+version="${file.jarVersion}"
+displayName="Elden Message"
+authors="ExtraMeteorP"
+
+[[dependencies.eldenmessage]]
+modId="forge"
+mandatory=true
+versionRange="[40,)"
+ordering="NONE"
+side="BOTH"
