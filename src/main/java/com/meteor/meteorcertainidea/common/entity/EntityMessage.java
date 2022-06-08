@@ -31,6 +31,7 @@ public class EntityMessage extends Entity {
     private static final String TAG_MESSAGE = "Message";
     private static final String TAG_ROTATION = "Rotation";
     private static final String TAG_OWNER_UUID = "Owner";
+    private static final String TAG_OWNER_NAME = "Owner_Name";
     private static final String TAG_THUMB_UP = "Thumbup";
     private static final String TAG_THUMB_DOWN = "Thumbdown";
     private static final String TAG_LIST = "List";
@@ -39,6 +40,7 @@ public class EntityMessage extends Entity {
     private static final EntityDataAccessor<String> MESSAGE = SynchedEntityData.defineId(EntityMessage.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Float> ROTATION = SynchedEntityData.defineId(EntityMessage.class, EntityDataSerializers.FLOAT);
     private static final EntityDataAccessor<Optional<UUID>> OWNER_UUID = SynchedEntityData.defineId(EntityMessage.class, EntityDataSerializers.OPTIONAL_UUID);
+    private static final EntityDataAccessor<String> OWNER_NAME = SynchedEntityData.defineId(EntityMessage.class, EntityDataSerializers.STRING);
     private static final EntityDataAccessor<Integer> THUMB_UP = SynchedEntityData.defineId(EntityMessage.class, EntityDataSerializers.INT);
     private static final EntityDataAccessor<Integer> THUMB_DOWN = SynchedEntityData.defineId(EntityMessage.class, EntityDataSerializers.INT);
 
@@ -63,6 +65,7 @@ public class EntityMessage extends Entity {
         this.entityData.define(MESSAGE, "");
         this.entityData.define(ROTATION, 0f);
         this.entityData.define(OWNER_UUID, Optional.empty());
+        this.entityData.define(OWNER_NAME, "");
         this.entityData.define(THUMB_UP, 0);
         this.entityData.define(THUMB_DOWN, 0);
     }
@@ -78,6 +81,7 @@ public class EntityMessage extends Entity {
                 setOwnerUUID(uuid);
             }
         }
+        setOwnerName(tag.getString(TAG_OWNER_NAME));
         setLike(tag.getInt(TAG_THUMB_UP));
         setDislike(tag.getInt(TAG_THUMB_DOWN));
         if(tag.contains(TAG_LIST, 9)) {
@@ -97,6 +101,7 @@ public class EntityMessage extends Entity {
         if(getOwnerUUID() != null){
             tag.putUUID(TAG_OWNER_UUID, getOwnerUUID());
         }
+        tag.putString(TAG_OWNER_NAME, getOwnerName());
         tag.putInt(TAG_THUMB_UP, getLike());
         tag.putInt(TAG_THUMB_DOWN, getDislike());
         if(!this.players.isEmpty()){
@@ -127,7 +132,7 @@ public class EntityMessage extends Entity {
 
     @Override
     public boolean canBeCollidedWith() {
-        return true;
+        return false;
     }
 
     public void addLike(String name){
@@ -179,6 +184,14 @@ public class EntityMessage extends Entity {
 
     public void setOwnerUUID(@Nullable UUID p_21817_) {
         this.entityData.set(OWNER_UUID, Optional.ofNullable(p_21817_));
+    }
+
+    public String getOwnerName() {
+        return this.entityData.get(OWNER_NAME);
+    }
+
+    public void setOwnerName(String message) {
+        this.entityData.set(OWNER_NAME, message);
     }
 
     public int getLike() {

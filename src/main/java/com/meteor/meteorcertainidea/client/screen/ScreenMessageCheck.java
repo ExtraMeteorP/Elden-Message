@@ -16,6 +16,7 @@ import net.minecraft.network.chat.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -38,6 +39,15 @@ public class ScreenMessageCheck extends Screen {
         this.hasLike = hasLike;
         this.likeButton = new TranslatableComponent("gui.like");
         this.dislikeButton = new TranslatableComponent("gui.dislike");
+    }
+
+    @Override
+    public boolean keyPressed(int p_96552_, int p_96553_, int p_96554_) {
+        if ((p_96552_ == GLFW.GLFW_KEY_E || p_96552_ == 256) && this.shouldCloseOnEsc()) {
+            this.onClose();
+            return true;
+        }
+        return super.keyPressed(p_96552_,p_96553_,p_96554_);
     }
 
     public void renderChar(PoseStack poseStack, char c, int x, int y){

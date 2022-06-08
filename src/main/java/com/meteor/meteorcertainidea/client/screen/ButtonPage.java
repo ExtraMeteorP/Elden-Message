@@ -8,14 +8,14 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class ButtonLike extends Button {
+public class ButtonPage extends Button {
 
-    public static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(LibMisc.MOD_ID, "textures/gui/messageicon.png");
-    private boolean like;
+    public static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(LibMisc.MOD_ID, "textures/gui/pageicon.png");
+    private boolean prev;
 
-    public ButtonLike(int i, int j, int w, int h, Component component, OnPress onPress, boolean like) {
-        super(i, j, w, h, component, onPress);
-        this.like = like;
+    public ButtonPage(int p_93721_, int p_93722_, int p_93723_, int p_93724_, Component p_93725_, OnPress p_93726_, boolean prev) {
+        super(p_93721_, p_93722_, p_93723_, p_93724_, p_93725_, p_93726_);
+        this.prev = prev;
     }
 
     @Override
@@ -27,7 +27,6 @@ public class ButtonLike extends Button {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(p_93676_, this.x, this.y, like ? 0 : 32, i * 32, 32, 32);
+        this.blit(p_93676_, this.x, this.y, prev ? 24 : 0 , i*22, 14, 22);
     }
-
 }

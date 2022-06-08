@@ -1,5 +1,6 @@
 package com.meteor.meteorcertainidea.client.screen;
 
+import com.meteor.meteorcertainidea.common.entity.EntityMessage;
 import com.meteor.meteorcertainidea.lib.LibWords;
 import com.meteor.meteorcertainidea.network.NetworkHandler;
 import com.meteor.meteorcertainidea.network.PacketLeaveMessage;
@@ -9,11 +10,14 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.StringUtils;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,8 +59,19 @@ public class ScreenMessageInput extends Screen {
     }
 
     @Override
+    public boolean keyPressed(int p_96552_, int p_96553_, int p_96554_) {
+        if ((p_96552_ == GLFW.GLFW_KEY_E || p_96552_ == 256) && this.shouldCloseOnEsc()) {
+            this.onClose();
+            return true;
+        }
+        return super.keyPressed(p_96552_,p_96553_,p_96554_);
+    }
+
+    @Override
     public void init()
     {
+        AbstractClientPlayer player = Minecraft.getInstance().player;
+
         wordListWidget = new WordListWidget(this, this.width - this.width/5 - (this.width/5 + 175), this.height/7, this.height - this.height/7 + 20);
         wordListWidget.setLeftPos(this.width/5 + 175);
 
@@ -65,8 +80,6 @@ public class ScreenMessageInput extends Screen {
         msgPart3 = new WordBox(getFontRenderer(), this.width/5 + 45, this.height/7 + 65 - 2, 120, 14, new TranslatableComponent("msg.part3"), this, wordList3);
         msgPart4 = new WordBox(getFontRenderer(), this.width/5 + 45, this.height/7 + 95 - 2, 120, 14, new TranslatableComponent("msg.part4"), this, wordList4);
         msgPart5 = new WordBox(getFontRenderer(), this.width/5 + 45, this.height/7 + 115 - 2, 120, 14, new TranslatableComponent("msg.part5"), this, wordList5);
-
-        AbstractClientPlayer player = Minecraft.getInstance().player;
 
         confirmButton = new ButtonConfirm(this.width/5 + 45, this.height/7 + 150, 32, 32, new TranslatableComponent("gui.confirm"),(button) -> {
             if(canConfirm()){

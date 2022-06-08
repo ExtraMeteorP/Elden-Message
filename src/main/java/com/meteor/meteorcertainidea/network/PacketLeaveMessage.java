@@ -43,6 +43,7 @@ public class PacketLeaveMessage {
             for(int i = 0; i < name.length; i++){
                 name[i] = LibWords.charset.charAt(player.getLevel().random.nextInt(26));
             }
+            e.setOwnerName(player.getGameProfile().getName());
             e.setAppearance(String.copyValueOf(name));
             e.setPos(x,y,z);
             e.setRotation(player.getXRot());

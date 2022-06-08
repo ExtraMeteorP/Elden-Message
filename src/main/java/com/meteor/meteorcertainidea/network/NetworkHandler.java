@@ -27,6 +27,8 @@ public class NetworkHandler {
                 makeServerBoundHandler(PacketLike::handle));
         CHANNEL.registerMessage(i++, PacketLeaveMessage.class, PacketLeaveMessage::encode, PacketLeaveMessage::decode,
                 makeServerBoundHandler(PacketLeaveMessage::handle));
+        CHANNEL.registerMessage(i++, PacketDeleteMessage.class, PacketDeleteMessage::encode, PacketDeleteMessage::decode,
+                makeServerBoundHandler(PacketDeleteMessage::handle));
 
         CHANNEL.registerMessage(i++, PacketCheck.class, PacketCheck::encode, PacketCheck::decode,
                 makeClientBoundHandler(PacketCheck.Handler::handle));

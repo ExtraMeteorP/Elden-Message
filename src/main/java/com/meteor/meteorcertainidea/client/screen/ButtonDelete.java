@@ -8,14 +8,14 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class ButtonLike extends Button {
+public class ButtonDelete extends Button {
 
-    public static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(LibMisc.MOD_ID, "textures/gui/messageicon.png");
-    private boolean like;
+    public static final ResourceLocation WIDGETS_LOCATION = new ResourceLocation(LibMisc.MOD_ID, "textures/gui/deleteicon.png");
+    private int ID;
 
-    public ButtonLike(int i, int j, int w, int h, Component component, OnPress onPress, boolean like) {
-        super(i, j, w, h, component, onPress);
-        this.like = like;
+    public ButtonDelete(int p_93721_, int p_93722_, int p_93723_, int p_93724_, Component p_93725_, OnPress p_93726_, int messageID) {
+        super(p_93721_, p_93722_, p_93723_, p_93724_, p_93725_, p_93726_);
+        this.ID = messageID;
     }
 
     @Override
@@ -27,7 +27,14 @@ public class ButtonLike extends Button {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
-        this.blit(p_93676_, this.x, this.y, like ? 0 : 32, i * 32, 32, 32);
+        this.blit(p_93676_, this.x, this.y, i*20 , 0, 20, 20);
     }
 
+    public int getID(){
+        return ID;
+    }
+
+    public void setID(int i){
+        this.ID = i;
+    }
 }

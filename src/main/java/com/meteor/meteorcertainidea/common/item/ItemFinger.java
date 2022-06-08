@@ -1,5 +1,6 @@
 package com.meteor.meteorcertainidea.common.item;
 
+import com.meteor.meteorcertainidea.client.screen.ScreenMessageInput;
 import com.meteor.meteorcertainidea.network.NetworkHandler;
 import com.meteor.meteorcertainidea.network.PacketOpenScreen;
 import net.minecraft.server.level.ServerPlayer;
