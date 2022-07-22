@@ -2,6 +2,8 @@
 
 	"item.eldenmessage.tarnished_wizened_finger":"Tarnished Wizened Finger",
 	
+	"eldenmessage.maxmessage":"你所留的谏言数目已达上限，按L可删除",
+	
 	"eldenmessage.recievelike":"你收到了一条好评"
 
 }

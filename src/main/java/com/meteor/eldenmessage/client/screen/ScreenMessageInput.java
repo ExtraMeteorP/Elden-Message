@@ -1,16 +1,21 @@
 package com.meteor.eldenmessage.client.screen;
 
+import com.meteor.eldenmessage.common.entity.EntityMessage;
 import com.meteor.eldenmessage.lib.LibWords;
 import com.meteor.eldenmessage.network.NetworkHandler;
 import com.meteor.eldenmessage.network.PacketLeaveMessage;
 import com.mojang.blaze3d.vertex.*;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.loading.StringUtils;
@@ -78,10 +83,35 @@ public class ScreenMessageInput extends Screen {
         msgPart4 = new WordBox(getFontRenderer(), this.width/5 + 45, this.height/7 + 95 - 2, 120, 14, new TranslatableComponent("msg.part4"), this, wordList4);
         msgPart5 = new WordBox(getFontRenderer(), this.width/5 + 45, this.height/7 + 115 - 2, 120, 14, new TranslatableComponent("msg.part5"), this, wordList5);
 
+        if(player.isCreative()){
+            msgPart1.setEditable(true);
+            msgPart2.setEditable(true);
+            msgPart3.setEditable(true);
+            msgPart4.setEditable(true);
+            msgPart5.setEditable(true);
+        }
+
         confirmButton = new ButtonConfirm(this.width/5 + 45, this.height/7 + 150, 32, 32, new TranslatableComponent("gui.confirm"),(button) -> {
             if(canConfirm()){
-                NetworkHandler.CHANNEL.sendToServer(new PacketLeaveMessage(player.getX(), player.getY(), player.getZ(), getMessage(), player.getUUID()));
-                Minecraft.getInstance().setScreen(null);
+                Minecraft mc = Minecraft.getInstance();
+                ClientLevel level = mc.level;
+                int cnt = 0;
+                if(!player.isCreative()){
+                    Iterable<Entity> entities = level.entitiesForRendering();
+                    for(Entity e : entities){
+                        if(e instanceof EntityMessage){
+                            if(player.getGameProfile().getName().equals(((EntityMessage) e).getOwnerName())){
+                                cnt++;
+                            }
+                        }
+                    }
+                }
+                if(cnt >= 5 && !player.isCreative()) {
+                    player.sendMessage(new TranslatableComponent("eldenmessage.maxmessage"), Util.NIL_UUID);
+                }else{
+                    NetworkHandler.CHANNEL.sendToServer(new PacketLeaveMessage(player.getX(), player.getY(), player.getZ(), getMessage(), player.getUUID()));
+                    Minecraft.getInstance().setScreen(null);
+                }
             }
         });
 
