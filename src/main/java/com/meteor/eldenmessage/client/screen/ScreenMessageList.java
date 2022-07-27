@@ -1,9 +1,12 @@
 package com.meteor.eldenmessage.client.screen;
 
 import com.google.common.collect.Lists;
+import com.meteor.eldenmessage.EldenMessage;
 import com.meteor.eldenmessage.common.entity.EntityMessage;
+import com.meteor.eldenmessage.network.MessageData;
 import com.meteor.eldenmessage.network.NetworkHandler;
 import com.meteor.eldenmessage.network.PacketDeleteMessage;
+import com.meteor.eldenmessage.network.PacketNotify;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -18,6 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -27,7 +31,8 @@ public class ScreenMessageList extends Screen {
     private  final int COUNT = 6;
 
     private final List<ButtonDelete> buttons = Lists.newArrayList();
-    private final List<Integer> messages = Lists.newArrayList();
+    private final List<MessageData> dataList = Lists.newArrayList();
+
     protected Component deleteButton;
 
     protected Button prevButton;
@@ -48,18 +53,16 @@ public class ScreenMessageList extends Screen {
         AbstractClientPlayer player = Minecraft.getInstance().player;
         ClientLevel level = player.clientLevel;
         this.buttons.clear();
-        this.messages.clear();
+        this.dataList.clear();
 
-        Iterable<Entity> entities = level.entitiesForRendering();
-        for(Entity e : entities){
-            if(e instanceof EntityMessage){
-                if(player.isCreative() || player.getGameProfile().getName().equals(((EntityMessage) e).getOwnerName())){
-                    messages.add(e.getId());
-                }
+        for(Integer key : EldenMessage.tagsMap.keySet()){
+            MessageData mData = EldenMessage.tagsMap.get(key);
+            if(player.isCreative() || player.getGameProfile().getName().equals(mData.ownername)){
+                dataList.add(mData);
             }
         }
 
-        maxPage = messages.size()/(COUNT + 1);
+        maxPage = dataList.size()/(COUNT + 1);
 
         for(int i = 0; i < 6; i++){
             addButtons(this.height/7 + 20 + i * 25, 0);
@@ -105,7 +108,7 @@ public class ScreenMessageList extends Screen {
     private void reload(){
         for(int i = 0; i < COUNT; i++){
             ButtonDelete button = buttons.get(i);
-            if(curPage * COUNT + i >= messages.size()){
+            if(curPage * COUNT + i >= dataList.size()){
                 button.visible = false;
                 continue;
             }
@@ -118,9 +121,11 @@ public class ScreenMessageList extends Screen {
         this.addButton(new ButtonDelete(this.width/2 + 120, j, 20, 20, this.deleteButton, (button) -> {
             if(button instanceof ButtonDelete){
                 ButtonDelete b = (ButtonDelete) button;
-                NetworkHandler.CHANNEL.sendToServer(new PacketDeleteMessage(messages.get(b.getID())));
-                messages.remove(b.getID());
-                maxPage = messages.size() / (COUNT + 1);
+
+                NetworkHandler.CHANNEL.sendToServer(new PacketDeleteMessage(dataList.get(b.getID()).id));
+                dataList.remove(b.getID());
+
+                maxPage = dataList.size() / (COUNT + 1);
                 curPage = Math.min(curPage, maxPage);
                 reload();
                 updateButton();
@@ -151,15 +156,20 @@ public class ScreenMessageList extends Screen {
                 continue;
 
             int id = button.getID();
-            ClientLevel level = Minecraft.getInstance().level;
-            Entity e = level.getEntity(messages.get(id));
-            if(e instanceof EntityMessage){
-                EntityMessage message = (EntityMessage) e;
-                this.drawString(poseStack, this.font, message.getMessage(), this.width/6 + 12, button.y, 16777215);
+            MessageData tag = dataList.get(id);
+            if(tag != null){
+                String message = tag.content;
+                String owner_name = tag.ownername;
+                int like = tag.like;
+                int dislike = tag.dislike;
+                double x = tag.x;
+                double y = tag.y;
+                double z = tag.z;
+                this.drawString(poseStack, this.font, message, this.width/6 + 12, button.y, 16777215);
                 this.drawString(poseStack, this.font,
                         String.format("x:%.2f y:%.2f z:%.2f  Owner:%s L:%d D:%d",
-                                message.getX(), message.getY(), message.getZ(),
-                                message.getOwnerName(), message.getLike(), message.getDislike()),
+                                x,y,z,
+                                owner_name, like, dislike),
                         this.width/6 + 12, button.y + 12, 16777215);
             }
         }

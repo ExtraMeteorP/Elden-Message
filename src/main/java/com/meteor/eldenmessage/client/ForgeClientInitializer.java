@@ -4,6 +4,8 @@ import com.meteor.eldenmessage.client.screen.ScreenMessageInput;
 import com.meteor.eldenmessage.client.screen.ScreenMessageList;
 import com.meteor.eldenmessage.common.item.ModItems;
 import com.meteor.eldenmessage.lib.LibMisc;
+import com.meteor.eldenmessage.network.NetworkHandler;
+import com.meteor.eldenmessage.network.PacketNotify;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
@@ -44,6 +46,7 @@ public class ForgeClientInitializer {
             }
             if(MESSAGE_LIST.matches(e.getKey(), e.getScanCode())){
                 if(mc.screen == null){
+                    NetworkHandler.CHANNEL.sendToServer(new PacketNotify());
                     mc.setScreen(new ScreenMessageList());
                 }
             }

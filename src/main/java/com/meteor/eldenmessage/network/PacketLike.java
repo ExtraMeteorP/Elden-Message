@@ -8,6 +8,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.entity.EntityAccess;
 
 import java.util.UUID;
 
@@ -35,7 +36,9 @@ public class PacketLike {
 
     public void handle(MinecraftServer server, ServerPlayer player) {
         server.execute(() -> {
+
             Entity e = player.level.getEntity(this.id);
+
             if(e != null && e instanceof EntityMessage){
                 EntityMessage message = (EntityMessage) e;
                 if(like){

@@ -29,11 +29,15 @@ public class NetworkHandler {
                 makeServerBoundHandler(PacketLeaveMessage::handle));
         CHANNEL.registerMessage(i++, PacketDeleteMessage.class, PacketDeleteMessage::encode, PacketDeleteMessage::decode,
                 makeServerBoundHandler(PacketDeleteMessage::handle));
+        CHANNEL.registerMessage(i++, PacketNotify.class, PacketNotify::encode, PacketNotify::decode,
+                makeServerBoundHandler(PacketNotify::handle));
 
         CHANNEL.registerMessage(i++, PacketCheck.class, PacketCheck::encode, PacketCheck::decode,
                 makeClientBoundHandler(PacketCheck.Handler::handle));
         CHANNEL.registerMessage(i++, PacketOpenScreen.class, PacketOpenScreen::encode, PacketOpenScreen::decode,
                 makeClientBoundHandler(PacketOpenScreen.Handler::handle));
+        CHANNEL.registerMessage(i++, PacketSync.class, PacketSync::encode, PacketSync::decode,
+                makeClientBoundHandler(PacketSync.Handler::handle));
     }
 
     private static <T> BiConsumer<T, Supplier<NetworkEvent.Context>> makeServerBoundHandler(TriConsumer<T, MinecraftServer, ServerPlayer> handler) {

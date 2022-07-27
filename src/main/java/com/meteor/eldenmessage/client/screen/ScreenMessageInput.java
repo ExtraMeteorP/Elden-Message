@@ -1,9 +1,11 @@
 package com.meteor.eldenmessage.client.screen;
 
+import com.meteor.eldenmessage.EldenMessage;
 import com.meteor.eldenmessage.common.entity.EntityMessage;
 import com.meteor.eldenmessage.lib.LibWords;
 import com.meteor.eldenmessage.network.NetworkHandler;
 import com.meteor.eldenmessage.network.PacketLeaveMessage;
+import com.meteor.eldenmessage.network.PacketNotify;
 import com.mojang.blaze3d.vertex.*;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -13,7 +15,6 @@ import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.api.distmarker.Dist;
@@ -73,7 +74,8 @@ public class ScreenMessageInput extends Screen {
     public void init()
     {
         AbstractClientPlayer player = Minecraft.getInstance().player;
-
+        NetworkHandler.CHANNEL.sendToServer(new PacketNotify());
+        
         wordListWidget = new WordListWidget(this, this.width - this.width/5 - (this.width/5 + 175), this.height/7, this.height - this.height/7 + 20);
         wordListWidget.setLeftPos(this.width/5 + 175);
 
@@ -93,16 +95,11 @@ public class ScreenMessageInput extends Screen {
 
         confirmButton = new ButtonConfirm(this.width/5 + 45, this.height/7 + 150, 32, 32, new TranslatableComponent("gui.confirm"),(button) -> {
             if(canConfirm()){
-                Minecraft mc = Minecraft.getInstance();
-                ClientLevel level = mc.level;
                 int cnt = 0;
                 if(!player.isCreative()){
-                    Iterable<Entity> entities = level.entitiesForRendering();
-                    for(Entity e : entities){
-                        if(e instanceof EntityMessage){
-                            if(player.getGameProfile().getName().equals(((EntityMessage) e).getOwnerName())){
-                                cnt++;
-                            }
+                    for(Integer key : EldenMessage.tagsMap.keySet()){
+                        if(player.getGameProfile().getName().equals(EldenMessage.tagsMap.get(key).ownername)){
+                            cnt++;
                         }
                     }
                 }
@@ -110,6 +107,7 @@ public class ScreenMessageInput extends Screen {
                     player.sendMessage(new TranslatableComponent("eldenmessage.maxmessage"), Util.NIL_UUID);
                 }else{
                     NetworkHandler.CHANNEL.sendToServer(new PacketLeaveMessage(player.getX(), player.getY(), player.getZ(), getMessage(), player.getUUID()));
+                    NetworkHandler.CHANNEL.sendToServer(new PacketNotify());
                     Minecraft.getInstance().setScreen(null);
                 }
             }

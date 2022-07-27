@@ -28,12 +28,12 @@ import java.util.UUID;
 public class EntityMessage extends Entity {
 
     private static final String TAG_APPEARANCE = "Appearance";
-    private static final String TAG_MESSAGE = "Message";
+    public static final String TAG_MESSAGE = "Message";
     private static final String TAG_ROTATION = "Rotation";
     private static final String TAG_OWNER_UUID = "Owner";
-    private static final String TAG_OWNER_NAME = "Owner_Name";
-    private static final String TAG_THUMB_UP = "Thumbup";
-    private static final String TAG_THUMB_DOWN = "Thumbdown";
+    public static final String TAG_OWNER_NAME = "Owner_Name";
+    public static final String TAG_THUMB_UP = "Thumbup";
+    public static final String TAG_THUMB_DOWN = "Thumbdown";
     private static final String TAG_LIST = "List";
 
     private static final EntityDataAccessor<String> APPEARANCE = SynchedEntityData.defineId(EntityMessage.class, EntityDataSerializers.STRING);
